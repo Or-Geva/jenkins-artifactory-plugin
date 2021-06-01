@@ -10,22 +10,31 @@ import java.io.Serializable;
  */
 public class JFrogPlatformInstance implements Serializable {
     private final ArtifactoryServer artifactoryServer;
+    private final DistributionServer distributionServer;
     private String id;
     private String url;
     private CpsScript cpsScript;
 
-    public JFrogPlatformInstance(ArtifactoryServer artifactoryServer, String url, String id) {
+    public JFrogPlatformInstance(ArtifactoryServer artifactoryServer, DistributionServer distributionServer, String url, String id) {
         this.id = id;
         this.url = StringUtils.removeEnd(url, "/");
         this.artifactoryServer = artifactoryServer;
+        this.distributionServer = distributionServer;
     }
 
     public ArtifactoryServer getArtifactoryServer() {
         return artifactoryServer;
     }
 
+    public DistributionServer getDistributionServer() {
+        return distributionServer;
+    }
+
     public void setCpsScript(CpsScript cpsScript) {
         this.cpsScript = cpsScript;
+        if (distributionServer != null) {
+            distributionServer.setCpsScript(cpsScript);
+        }
     }
 
     public String getUrl() {
