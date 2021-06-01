@@ -28,11 +28,12 @@ public class DistributionServer implements Serializable {
     public static final String SERVER = "server";
     public static final String TARGET_PROPS = "targetProps";
     public static final String DRY_RUN = "dryRun";
-    public static final String SIGN = "sign";
-    public static final String PASSPHRASE = "passphrase";
+    public static final String SIGN_IMMEDIATELY = "signImmediately";
+    public static final String GPG_PASSPHRASE = "gpgPassphrase";
+    public static final String DESCRIPTION = "description";
     public static final String RELEASE_NOTE_PATH = "releaseNotePath";
     public static final String RELEASE_NOTE_SYNTAX = "releaseNoteSyntax";
-    public static final String REPO = "repo";
+    public static final String STORING_REPOSITORY = "StoringRepository";
     public static final String INSECURE_TLS = "insecureTls";
 
     private final Connection connection = new Connection();
@@ -94,7 +95,7 @@ public class DistributionServer implements Serializable {
         if (!arguments.keySet().containsAll(mandatoryKeys)) {
             throw new IllegalArgumentException(String.format("%s, %s and %s are mandatory arguments", NAME, VERSION, SPEC));
         }
-        List<String> optionalKeys = Arrays.asList(TARGET_PROPS, DRY_RUN, SIGN, PASSPHRASE, RELEASE_NOTE_PATH, RELEASE_NOTE_SYNTAX, REPO, INSECURE_TLS);
+        List<String> optionalKeys = Arrays.asList(TARGET_PROPS, DRY_RUN, SIGN_IMMEDIATELY, GPG_PASSPHRASE, RELEASE_NOTE_PATH, RELEASE_NOTE_SYNTAX, STORING_REPOSITORY, INSECURE_TLS, DESCRIPTION);
         if (!optionalKeys.containsAll(arguments.keySet())) {
             throw new IllegalArgumentException("Only the following arguments are allowed, " + optionalKeys);
         }

@@ -12,46 +12,48 @@ import org.jfrog.hudson.util.JenkinsBuildInfoLog;
 import java.io.IOException;
 
 public class ReleaseBundleCreateExecutor implements Executor {
-    private final String repo;
     private final String spec;
     private final String name;
-    private final boolean sign;
     private final String version;
     private final boolean dryRun;
-    private final String passphrase;
+    private final String description;
     private final StepContext context;
     private final transient Run build;
     private final boolean insecureTls;
+    private final String gpgPassphrase;
     private final transient FilePath ws;
     private final String releaseNotePath;
+    private final boolean signImmediately;
+    private final String StoringRepository;
     private final DistributionServer server;
     private final JenkinsBuildInfoLog logger;
     private final transient TaskListener listener;
     private final ReleaseBundleCreate.ReleaseNotesSyntax releaseNoteSyntax;
 
-    public ReleaseBundleCreateExecutor(DistributionServer server, String name, String version, String spec, String repo, boolean sign, boolean dryRun, String passphrase, String releaseNotePath,
-                                       ReleaseBundleCreate.ReleaseNotesSyntax releaseNoteSyntax, boolean insecureTls, TaskListener listener, Run build, FilePath ws, StepContext context) {
+    public ReleaseBundleCreateExecutor(DistributionServer server, String name, String version, String spec, String StoringRepository, boolean signImmediately, boolean dryRun, String gpgPassphrase, String releaseNotePath,
+                                       ReleaseBundleCreate.ReleaseNotesSyntax releaseNoteSyntax, String description, boolean insecureTls, TaskListener listener, Run build, FilePath ws, StepContext context) {
         this.ws = ws;
         this.name = name;
         this.spec = spec;
-        this.sign = sign;
-        this.repo = repo;
         this.build = build;
         this.server = server;
         this.dryRun = dryRun;
         this.context = context;
         this.version = version;
         this.listener = listener;
-        this.passphrase = passphrase;
+        this.description = description;
         this.insecureTls = insecureTls;
+        this.gpgPassphrase = gpgPassphrase;
+        this.signImmediately = signImmediately;
         this.releaseNotePath = releaseNotePath;
+        this.StoringRepository = StoringRepository;
         this.releaseNoteSyntax = releaseNoteSyntax;
         this.logger = new JenkinsBuildInfoLog(listener);
     }
 
 
     public void execute() throws IOException, InterruptedException {
-        ReleaseBundleCreateCallable runCallable = new ReleaseBundleCreateCallable(name, version, spec, repo, sign, dryRun, passphrase, releaseNotePath, releaseNoteSyntax, insecureTls, logger);
+        ReleaseBundleCreateCallable runCallable = new ReleaseBundleCreateCallable(name, version, spec, StoringRepository, signImmediately, dryRun, gpgPassphrase, releaseNotePath, releaseNoteSyntax, description, insecureTls, logger);
         addDistributionManagerBuilderToCallable(runCallable);
         ws.act(runCallable);
     }

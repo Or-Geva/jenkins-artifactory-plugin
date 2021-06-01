@@ -10,33 +10,34 @@ import java.io.File;
 import java.io.IOException;
 
 public class ReleaseBundleCreateCallable extends MasterToSlaveFileCallable<Void> {
-
     private final Log log;
     private final String spec;
     private final String name;
     private final String version;
     private final boolean dryRun;
-    private final boolean sign;
-    private final String passphrase;
-    private final String releaseNotePath;
-    private final ReleaseBundleCreate.ReleaseNotesSyntax releaseNoteSyntax;
-    private final String repo;
+    private final String description;
     private final boolean insecureTls;
+    private final String gpgPassphrase;
+    private final String releaseNotePath;
+    private final boolean signImmediately;
+    private final String StoringRepository;
     private DistributionManagerBuilder distributionManagerBuilder;
+    private final ReleaseBundleCreate.ReleaseNotesSyntax releaseNoteSyntax;
 
-    public ReleaseBundleCreateCallable(String name, String version, String spec, String repo, boolean sign, boolean dryRun,
-                                       String passphrase, String releaseNotePath, ReleaseBundleCreate.ReleaseNotesSyntax releaseNoteSyntax,
+    public ReleaseBundleCreateCallable(String name, String version, String spec, String StoringRepository, boolean signImmediately, boolean dryRun,
+                                       String gpgPassphrase, String releaseNotePath, ReleaseBundleCreate.ReleaseNotesSyntax releaseNoteSyntax, String description,
                                        boolean insecureTls, Log logger) {
         this.spec = spec;
         this.name = name;
-        this.sign = sign;
-        this.repo = repo;
         this.log = logger;
         this.dryRun = dryRun;
         this.version = version;
-        this.passphrase = passphrase;
+        this.description = description;
         this.insecureTls = insecureTls;
+        this.gpgPassphrase = gpgPassphrase;
+        this.signImmediately = signImmediately;
         this.releaseNotePath = releaseNotePath;
+        this.StoringRepository = StoringRepository;
         this.releaseNoteSyntax = releaseNoteSyntax;
     }
 
@@ -46,7 +47,7 @@ public class ReleaseBundleCreateCallable extends MasterToSlaveFileCallable<Void>
 
     @Override
     public Void invoke(File file, VirtualChannel channel) throws IOException, InterruptedException {
-        ReleaseBundleCreate releaseBundleCreate = new ReleaseBundleCreate(name, version, spec, repo, sign, distributionManagerBuilder, dryRun, passphrase, releaseNotePath, releaseNoteSyntax, insecureTls, log);
+        ReleaseBundleCreate releaseBundleCreate = new ReleaseBundleCreate(name, version, spec, StoringRepository, signImmediately, distributionManagerBuilder, dryRun, gpgPassphrase, releaseNotePath, releaseNoteSyntax, description, insecureTls, log);
         releaseBundleCreate.execute();
         return null;
     }
