@@ -51,13 +51,11 @@ public class ReleaseBundleCreateExecutor implements Executor {
         this.logger = new JenkinsBuildInfoLog(listener);
     }
 
-
     public void execute() throws IOException, InterruptedException {
         ReleaseBundleCreateCallable runCallable = new ReleaseBundleCreateCallable(name, version, spec, StoringRepository, signImmediately, dryRun, gpgPassphrase, releaseNotePath, releaseNoteSyntax, description, insecureTls, logger);
         addDistributionManagerBuilderToCallable(runCallable);
         ws.act(runCallable);
     }
-
 
     private void addDistributionManagerBuilderToCallable(ReleaseBundleCreateCallable callable) {
         callable.setDistributionManager(server.getDistributionManagerBuilder(logger, build.getParent()));
